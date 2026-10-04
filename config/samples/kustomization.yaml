@@ -1,0 +1,4 @@
+## Append samples of your project ##
+resources:
+- delivery_v1alpha1_cloudrelease.yaml
+# +kubebuilder:scaffold:manifestskustomizesamples
