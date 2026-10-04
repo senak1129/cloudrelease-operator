@@ -1,5 +1,7 @@
 # CloudRelease Operator
 
+[中文](README_CN.md)
+
 A Kubernetes operator that manages simple web application deployments through a custom resource.
 It translates a high-level `CloudRelease` declaration into standard `Deployment` and `Service` resources.
 
