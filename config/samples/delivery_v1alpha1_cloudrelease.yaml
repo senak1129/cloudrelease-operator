@@ -2,7 +2,7 @@ apiVersion: delivery.cloudrelease.dev/v1alpha1
 kind: CloudRelease
 metadata:
   labels:
-    app.kubernetes.io/name: operator
+    app.kubernetes.io/name: cloudrelease-operator
     app.kubernetes.io/managed-by: kustomize
   name: demo
 spec:

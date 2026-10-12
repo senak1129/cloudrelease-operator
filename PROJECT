@@ -6,8 +6,8 @@ cliVersion: 4.15.0
 domain: cloudrelease.dev
 layout:
 - go.kubebuilder.io/v4
-projectName: operator
-repo: github.com/senak1129/k8s-client-go-lab/operator
+projectName: cloudrelease-operator
+repo: github.com/senak1129/cloudrelease-operator
 resources:
 - api:
     crdVersion: v1
@@ -16,6 +16,6 @@ resources:
   domain: cloudrelease.dev
   group: delivery
   kind: CloudRelease
-  path: github.com/senak1129/k8s-client-go-lab/operator/api/v1alpha1
+  path: github.com/senak1129/cloudrelease-operator/api/v1alpha1
   version: v1alpha1
 version: "3"
