@@ -1,0 +1,48 @@
+apiVersion: rbac.authorization.k8s.io/v1
+{{- if .Values.rbac.namespaced }}
+kind: Role
+{{- else }}
+kind: ClusterRole
+{{- end }}
+metadata:
+{{- if .Values.rbac.namespaced }}
+  namespace: {{ .Release.Namespace }}
+{{- end }}
+  name: {{ include "cloudrelease-operator.resourceName" (dict "suffix" "manager-role" "context" $) }}
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - services
+  verbs:
+  - create
+  - get
+  - list
+  - patch
+  - watch
+- apiGroups:
+  - apps
+  resources:
+  - deployments
+  verbs:
+  - create
+  - get
+  - list
+  - patch
+  - watch
+- apiGroups:
+  - delivery.cloudrelease.dev
+  resources:
+  - cloudreleases
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - delivery.cloudrelease.dev
+  resources:
+  - cloudreleases/status
+  verbs:
+  - get
+  - patch
+  - update

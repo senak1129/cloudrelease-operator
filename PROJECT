@@ -6,6 +6,10 @@ cliVersion: 4.15.0
 domain: cloudrelease.dev
 layout:
 - go.kubebuilder.io/v4
+plugins:
+  helm.kubebuilder.io/v2-alpha:
+    manifests: dist/install.yaml
+    output: dist
 projectName: cloudrelease-operator
 repo: github.com/senak1129/cloudrelease-operator
 resources:
