@@ -13,12 +13,17 @@ manager:
   ##
   enabled: true
 
-  replicas: 1
+  ## 2 副本 + --leader-elect 才有意义：单副本时 leader election 是纯粹的空转，
+  ## 而且主控制器故障时无人接管。多副本下只有一个 Pod 持有租约，其余待命。
+  replicas: 2
 
   image:
-    repository: controller
+    ## 镜像仓库名必须与 `make docker-build IMG=<repository>:<tag>` 一致，
+    ## 否则 kubelet 会去远端 registry 找这个仓库（默认补全为 docker.io/library/<repository>）。
+    repository: cloudrelease-operator
     ## Image tag (defaults to Chart.appVersion if not set)
-    ##
+    ## 留空时用 Chart.yaml 的 appVersion，这是 Helm 的约定：
+    ## 打包一次 Chart，换 appVersion 即换整套镜像版本。
     # tag: ""
     pullPolicy: IfNotPresent
 
@@ -66,8 +71,19 @@ manager:
       memory: 64Mi
 
   ## Manager pod's affinity
+  ## 首选反亲和：尽量把两个 manager 副本分散到不同节点。
+  ## 用 preferred 而非 required，单节点集群（如 kind）仍能调度成功。
   ##
-  affinity: {}
+  affinity:
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+        - weight: 100
+          podAffinityTerm:
+            topologyKey: kubernetes.io/hostname
+            labelSelector:
+              matchLabels:
+                app.kubernetes.io/name: cloudrelease-operator
+                control-plane: controller-manager
 
   ## Manager pod's node selector
   ##

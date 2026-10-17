@@ -155,10 +155,10 @@ func main() {
 	}
 
 	mgr, err := ctrl.NewManager(ctrl.GetConfigOrDie(), ctrl.Options{
-		Scheme:                 scheme,
-		Metrics:                metricsServerOptions,
-		WebhookServer:          webhookServer,
-		HealthProbeBindAddress: probeAddr,
+		Scheme:                  scheme,
+		Metrics:                 metricsServerOptions,
+		WebhookServer:           webhookServer,
+		HealthProbeBindAddress:  probeAddr,
 		LeaderElection:          enableLeaderElection,
 		LeaderElectionID:        "a669b8ac.cloudrelease.dev",
 		LeaderElectionNamespace: os.Getenv("POD_NAMESPACE"),
@@ -172,7 +172,13 @@ func main() {
 		// the manager stops, so would be fine to enable this option. However,
 		// if you are doing or is intended to do any operation such as perform cleanups
 		// after the manager stops then its usage might be unsafe.
-		// LeaderElectionReleaseOnCancel: true,
+		//
+		// 本仓库已确认安全：main() 在 mgr.Start() 返回后没有任何后续清理逻辑，
+		// 进程立即退出。开启后主动让位会删除 Lease，备用副本无需等待
+		// LeaseDuration（默认 15s）过期即可接管，故障切换从"秒级"降到"亚秒级"。
+		// 如果将来在 mgr.Start() 之后加入灰度下线、连接池排空等收尾动作，
+		// 必须重新评估此开关，否则会出现"已让位但仍在写"的双主窗口。
+		LeaderElectionReleaseOnCancel: true,
 	})
 	if err != nil {
 		setupLog.Error(err, "Failed to start manager")
